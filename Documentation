@@ -1,0 +1,11 @@
+This document tells about flow and connections between IntelliMaint functions , domain code and application code.
+
+In IntelliMaint_core we have this
+
+from IntelliMaint.feature_engineering import TimeDomain, FrequencyDomain
+from IntelliMaint.anomaly_detection import AnomalyDetection
+from IntelliMaint.data_analysis import SOM
+from IntelliMaint.rul_models import GPRDegradationModel
+
+
+__all__ = ['TimeDomain', 'FrequencyDomain', 'AnomalyDetection', 'SOM', 'GPRDegradationModel']
