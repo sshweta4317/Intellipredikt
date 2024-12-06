@@ -50,7 +50,7 @@ Preprocess the input signal using a series of operations (filtering, smoothing, 
 #### **Example**:
 ```python
 # Apply filtering, smoothing, and normalization
-processed_signal = preprocessor.preprocess(raw_signal, operations=['filter', 'smooth'])
+processed_signal = preprocessor.preprocess(raw_signal, operations=['filter', 'smooth', 'normalize'])
 ```
 
 ---
