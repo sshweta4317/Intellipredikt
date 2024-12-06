@@ -1,53 +1,142 @@
-Main Application Documentation
-Overview
-The main application serves as the central control for bearing condition analysis, integrating functionalities from the library (intelliMaint_core.py) and the domain-specific module (bearing.py). It facilitates data acquisition, feature extraction, health scoring, anomaly detection, and diagnostics, providing an end-to-end solution for monitoring and diagnosing bearing conditions.
-Key Steps:
-•	- **Data Acquisition**: Loads signal data for analysis.
-- **Feature Extraction**: Computes statistical and frequency-domain features.
-- **Health Scoring**: Evaluates bearing health using clustering and anomaly detection.
-- **Anomaly Detection**: Identifies fault onset and progression.
-- **Diagnostics**: Analyzes fault modes and evaluates diagnostic features.
-Function/Class Descriptions
-Data Acquisition
-Purpose: Loads and formats raw signal data from specified files.
-Example:
-data_dir_path = 'path_to_data'
-data_acquisition = DataAcquisition()
-files = data_acquisition.get_file_list(data_dir_path)
-print(f'Total files found: {len(files)}')
-Feature Extraction
-Purpose: Extracts time-domain and frequency-domain features using the Bearing class.
-Example:
-bearing = Bearing(files)
-signal = pd.to_numeric(df['column'], errors='coerce').dropna().values
-features = bearing.extract_features(signal)
-print(features)
-Health Scoring
-Purpose: Uses SOM for clustering features and evaluates health scores.
-Example:
-som = SOM()
-trained_som, scaler = som.train(train_data)
-mqe = som.predict(trained_som, test_data, scaler)
-plt.plot(mqe)
-Anomaly Detection
-Purpose: Detects anomalies and identifies the start of fault progression.
-Example:
-anomaly_detection = AnomalyDetection()
-anomaly_detection.train_cosmo(train_data)
-health_scores, _ = anomaly_detection.test_cosmo(test_data)
-plt.plot(health_scores)
-Diagnostics
-Purpose: Evaluates and visualizes diagnostic features for fault classification.
-Example:
-diagnostics = Diagnostic()
-diagnostic_features = diagnostics.evaluate_diagnostic_features(df_features, labels)
-diagnostics.plot_diagnostic_features(diagnostic_features, top_n=5)
-Workflow Integration
-The main application integrates functionalities from the library and domain-specific modules to provide a seamless workflow from data acquisition to diagnostics. Below is a high-level overview:
-•	- The `DataAcquisition` class retrieves signal files and processes raw data.
-- The `Bearing` class extracts features for analysis.
-- The `SOM` and `AnomalyDetection` classes compute health scores and detect anomalies.
-- The `Diagnostic` class evaluates fault modes and identifies critical features.
-Flowchart
-The flowchart below illustrates the dependencies and overall workflow from data acquisition to diagnostics.
 
+# DataPreprocessing API
+
+The **`DataPreprocessing`** class provides a set of methods to preprocess time-series or signal data through filtering, smoothing, and normalization. It allows customizable preprocessing pipelines.
+
+---
+
+## Class: `DataPreprocessing`
+
+### **`DataPreprocessing(filter_order, cutoff_frequency)`**
+
+#### **Arguments**:
+- **`filter_order`** (*int*):  
+  Order of the Butterworth lowpass filter.  
+  Determines the complexity of the filter and the sharpness of the cutoff frequency.  
+
+- **`cutoff_frequency`** (*float*):  
+  Normalized cutoff frequency of the lowpass filter (range: 0.0 to 1.0).
+
+#### **Example**:
+```python
+from preprocessing import DataPreprocessing
+
+# Initialize the class with filter order 4 and cutoff frequency 0.2
+preprocessor = DataPreprocessing(filter_order=4, cutoff_frequency=0.2)
+```
+
+---
+
+## Method: `preprocess(signal, operations=None)`
+
+Preprocess the input signal using a series of operations (filtering, smoothing, normalization).
+
+#### **Arguments**:
+- **`signal`** (*array-like*):  
+  Input data (e.g., a signal or time-series) to preprocess.
+
+- **`operations`** (*list of str, optional*):  
+  List of preprocessing operations to perform. Options:
+  - `'filter'` - Apply lowpass Butterworth filter.
+  - `'smooth'` - Apply Savitzky–Golay smoothing.
+  - `'normalize'` - Normalize the data (z-score normalization).
+
+  If `None`, defaults to `['filter', 'smooth', 'normalize']`.
+
+#### **Returns**:
+- **`signal`** (*array-like*):  
+  The preprocessed signal.
+
+#### **Example**:
+```python
+# Apply filtering, smoothing, and normalization
+processed_signal = preprocessor.preprocess(raw_signal, operations=['filter', 'smooth'])
+```
+
+---
+
+## Method: `butter_lowpass_filter(data)`
+
+Applies a lowpass Butterworth filter to the input data.
+
+#### **Arguments**:
+- **`data`** (*array-like*):  
+  Input signal to filter.
+
+#### **Returns**:
+- **`filtered_data`** (*array-like*):  
+  Filtered signal.
+
+#### **Example**:
+```python
+# Filter the signal using the Butterworth lowpass filter
+filtered_signal = preprocessor.butter_lowpass_filter(raw_signal)
+```
+
+---
+
+## Method: `apply_savgol_filter(data, window_length=201, polyorder=3)`
+
+Applies a Savitzky–Golay filter to smooth the input signal.
+
+#### **Arguments**:
+- **`data`** (*array-like*):  
+  Input signal to smooth.
+
+- **`window_length`** (*int, optional*):  
+  Length of the filter window (must be odd). Default is `201`.
+
+- **`polyorder`** (*int, optional*):  
+  Order of the polynomial used to fit the samples. Default is `3`.
+
+#### **Returns**:
+- **`smoothed_data`** (*array-like*):  
+  Smoothed signal.
+
+#### **Example**:
+```python
+# Smooth the signal using a Savitzky–Golay filter
+smoothed_signal = preprocessor.apply_savgol_filter(raw_signal, window_length=101, polyorder=2)
+```
+
+---
+
+## Method: `normalize_data(data)`
+
+Normalizes the input data using z-score normalization.
+
+#### **Arguments**:
+- **`data`** (*array-like*):  
+  Input signal to normalize.
+
+#### **Returns**:
+- **`normalized_data`** (*array-like*):  
+  Signal normalized to have zero mean and unit variance.
+
+#### **Example**:
+```python
+# Normalize the signal
+normalized_signal = preprocessor.normalize_data(raw_signal)
+```
+
+---
+
+## Usage Example:
+
+```python
+from preprocessing import DataPreprocessing
+
+# Initialize the DataPreprocessing class
+preprocessor = DataPreprocessing(filter_order=4, cutoff_frequency=0.2)
+
+# Define a raw signal
+raw_signal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Preprocess the signal
+processed_signal = preprocessor.preprocess(raw_signal)
+
+# Apply individual operations
+filtered_signal = preprocessor.butter_lowpass_filter(raw_signal)
+smoothed_signal = preprocessor.apply_savgol_filter(raw_signal, window_length=5, polyorder=2)
+normalized_signal = preprocessor.normalize_data(raw_signal)
+```
