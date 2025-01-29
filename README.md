@@ -14,3 +14,17 @@
 - `Class3`
   - `function5`
   - `function6`
+  - 
+classDiagram
+    class Class1 {
+        +function1()
+        +function2()
+    }
+    class Class2 {
+        +function3()
+        +function4()
+    }
+    class Class3 {
+        +function5()
+        +function6()
+    }
