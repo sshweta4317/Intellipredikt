@@ -25,6 +25,20 @@ The `DataAcquisition` class provides a set of methods to handle and process data
 - Initializes the `DataAcquisition` object with a given configuration dictionary.
 - Calls `_get_file_list()` internally to populate `self.files` with a list of files matching the `file_pattern` in the specified `DATA_DIR_PATH`.
 
+## Example:
+
+```python
+config = {
+    "DATA_DIR_PATH": r"C:\path\to\your\data",  # Directory path containing the data files
+    "file_pattern": "*.csv",  # File pattern to match (e.g., "*.csv")
+    "delimiter": ",",  # Delimiter for the data files (e.g., comma for CSV)
+    "header": None,  # No header row
+    "skiprows": 1,  # Skip the first row of each file
+}
+
+# Initialize DataAcquisition with the configuration
+data_acquisition = DataAcquisition(config)
+```
 ---
 
 ### Method: `_get_file_list(self)`
@@ -36,6 +50,13 @@ The `DataAcquisition` class provides a set of methods to handle and process data
 - Searches the directory specified in `DATA_DIR_PATH` for files matching the `file_pattern`.
 - Returns a list of file paths or raises a `FileNotFoundError` if no files match the pattern.
 
+## Example:
+```python
+# Retrieve the list of files that match the pattern
+files = data_acquisition._get_file_list()
+print(files)  # Prints the list of file paths
+```
+
 ---
 
 ### Method: `load_all_data(self)`
@@ -46,6 +67,16 @@ The `DataAcquisition` class provides a set of methods to handle and process data
 #### Description:
 - Loads all files in the directory and combines their contents into a single DataFrame.
 - Each file is read using the configurations (delimiter, header, skiprows) defined in the `config` dictionary.
+
+## Example:
+
+```python
+# Load and combine data from all files
+all_data = data_acquisition.load_all_data()
+
+# Print the combined data
+print(all_data.head())
+```
 
 ---
 
@@ -60,6 +91,17 @@ The `DataAcquisition` class provides a set of methods to handle and process data
 #### Description:
 - Loads data from a single file located at the specified `file_path`.
 - Reads the file using the configuration parameters (`delimiter`, `header`, `skiprows`) from the `config` dictionary.
+
+## Example:
+
+```python
+# Load a specific file's data
+file_path = r"C:\path\to\your\data\file1.csv"
+df = data_acquisition.load_file_data(file_path)
+
+# Print the data from the specific file
+print(df.head())
+```
 
 ---
 
