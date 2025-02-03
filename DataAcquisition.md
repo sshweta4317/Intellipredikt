@@ -34,9 +34,8 @@ data_loader = DataAcquisition(config)
 
 ---
 
-## Methods
+## Method: `_get_file_list(self)`
 
-### `_get_file_list(self)`
 #### Description:
 Retrieves a list of files from the specified directory that match the given pattern.
 
@@ -57,7 +56,7 @@ print(files)
 
 ---
 
-### `load_all_data(self)`
+## Method: `load_all_data(self)`
 #### Description:
 Loads and combines data from all matching files in the directory into a single DataFrame.
 
@@ -75,7 +74,7 @@ print(df.head())
 
 ---
 
-### `load_file_data(self, file_path)`
+## Method: `load_file_data(self, file_path)`
 #### Description:
 Loads data from a specified file into a DataFrame.
 
