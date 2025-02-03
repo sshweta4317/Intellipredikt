@@ -12,7 +12,7 @@ Initializes the `DataAcquisition` class with a configuration dictionary containi
 #### Parameters:
 - `config` (dict): A dictionary containing configurations for data acquisition:
   - `DATA_DIR_PATH` (str): Path to the directory containing data files.
-  - `file_pattern` (str): Pattern to match filenames (e.g., "*.csv").
+  - `file_pattern` (str): Pattern to match filenames (e.g., "*.csv", ".txt", "200*").
   - `delimiter` (str): Delimiter used in the files (e.g., "," or "\t").
   - `header` (int or None): Row number to use as column names, or `None` if no header.
   - `skiprows` (int): Number of rows to skip at the beginning of each file.
@@ -20,7 +20,7 @@ Initializes the `DataAcquisition` class with a configuration dictionary containi
 #### Returns:
 None
 
-#### Example Usage:
+#### Example:
 ```python
 config = {
     "DATA_DIR_PATH": "./data",
@@ -48,7 +48,7 @@ None
 #### Raises:
 - `FileNotFoundError`: If no files matching the pattern are found.
 
-#### Example Usage:
+#### Example:
 ```python
 files = data_loader._get_file_list()
 print(files)
@@ -66,7 +66,7 @@ None
 #### Returns:
 - `pd.DataFrame`: A DataFrame containing combined data from all files.
 
-#### Example Usage:
+#### Example:
 ```python
 df = data_loader.load_all_data()
 print(df.head())
@@ -84,7 +84,7 @@ Loads data from a specified file into a DataFrame.
 #### Returns:
 - `pd.DataFrame`: A DataFrame containing the file's data.
 
-#### Example Usage:
+#### Example:
 ```python
 file_path = "./data/sample.csv"
 df = data_loader.load_file_data(file_path)
@@ -98,9 +98,38 @@ print(df.head())
 - The `_get_file_list` method is called automatically during initialization.
 - The `load_all_data` method concatenates all files into a single DataFrame, which can be useful for batch processing.
 
-## Dependencies
-- `glob`
-- `pandas`
-- `numpy`
+## Example Usage:
 
+```python
+
+from IntelliMaint.data_acquisition import DataAcquisition
+
+def main():
+    config = {
+        "DATA_DIR_PATH": r'C:\Users\DELL\Tool_wear_data/',
+        "file_pattern": "*.csv",
+        "delimiter": ",",
+        "header": None,
+        "skiprows": 1,
+    }
+    
+    # Initialize DataAcquisition
+    data_acquisition = DataAcquisition(config)
+    
+    # Iterate through files
+    for file_path in data_acquisition.files:
+        print(f"Processing file: {file_path}")
+        df = data_acquisition.load_file_data(file_path)
+    
+        # Process each column in the file
+        for Col in range(df.shape[1] - 1):  # Exclude last column if it's non-signal data
+            signal = pd.to_numeric(df.iloc[:, Col], errors="coerce").dropna().values
+            signal = np.array(signal, dtype=float)  # Ensure it's a numpy array
+
+            print(signal)
+            print(len(signal))
+
+if __name__ == "__main__":
+    main()
+```
 
