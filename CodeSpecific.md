@@ -1,4 +1,9 @@
-# DataAcquisition API Documentation
+# data_acquisition API Documentation
+
+### DataAcquisition class
+```python
+from IntelliMaint.data_acquisition import DataAcquisition
+```
 
 ## Overview
 
