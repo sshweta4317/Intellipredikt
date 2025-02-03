@@ -1,13 +1,19 @@
-# DataAcquisition Class Documentation
+# data_acquisition API Documentation
+
+## Import
+
+```python
+from IntelliMaint.data_acquisition import DataAcquisition
+```
 
 ## Overview
-The `DataAcquisition` class is designed to handle loading and processing data files from a specified directory. It supports reading multiple files matching a given pattern, combining them into a single DataFrame, and loading individual files.
+The `DataAcquisition class` is part of the IntelliMaint module and provides a set of methods to facilitate the loading and processing of data files. It allows users to specify directory paths, file patterns, delimiters, and other configurations for handling and combining data from multiple files.
 
 ## Initialization
 
 ### `__init__(self, config)`
 #### Description:
-Initializes the `DataAcquisition` class with a configuration dictionary containing file loading parameters.
+Initializes the `DataAcquisition` class with a configuration dictionary containing file loading parameters. Internally, it calls the `_get_file_list()` method to populate self.files with a list of files that match the given pattern.
 
 #### Parameters:
 - `config` (dict): A dictionary containing configurations for data acquisition:
@@ -43,7 +49,7 @@ Retrieves a list of files from the specified directory that match the given patt
 None
 
 #### Returns:
-- `list`: A sorted list of file paths that match the pattern.
+- `list`: A sorted list of file paths that match the specified file pattern in the configured directory.
 
 #### Raises:
 - `FileNotFoundError`: If no files matching the pattern are found.
@@ -58,7 +64,8 @@ print(files)
 
 ## Method: `load_all_data(self)`
 #### Description:
-Loads and combines data from all matching files in the directory into a single DataFrame.
+Loads all files matching the given pattern in the specified directory and combines their contents into a single DataFrame.
+Each file is read using the parameters specified in the configuration dictionary (delimiter, header, skiprows).
 
 #### Parameters:
 None
@@ -76,18 +83,22 @@ print(df.head())
 
 ## Method: `load_file_data(self, file_path)`
 #### Description:
-Loads data from a specified file into a DataFrame.
+Loads data from a single file located at file_path.
+Reads the file using the configuration parameters such as delimiter, header, and skiprows.
 
 #### Parameters:
 - `file_path` (str): Path to the file to be loaded.
 
 #### Returns:
-- `pd.DataFrame`: A DataFrame containing the file's data.
+- `pd.DataFrame`: A Pandas DataFrame containing the data from the specified file.
 
 #### Example:
 ```python
+# Load a specific file's data
 file_path = "./data/sample.csv"
 df = data_loader.load_file_data(file_path)
+
+# Print the data from the specific file
 print(df.head())
 ```
 
@@ -105,6 +116,7 @@ print(df.head())
 from IntelliMaint.data_acquisition import DataAcquisition
 
 def main():
+    # Configuration for data acquisition
     config = {
         "DATA_DIR_PATH": r'C:\Users\DELL\Tool_wear_data/',
         "file_pattern": "*.csv",
@@ -113,7 +125,7 @@ def main():
         "skiprows": 1,
     }
     
-    # Initialize DataAcquisition
+    # Initialize DataAcquisition with config
     data_acquisition = DataAcquisition(config)
     
     # Iterate through files
